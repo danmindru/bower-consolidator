@@ -1,0 +1,26 @@
+{
+  "name": "bower-consolidator",
+  "version": "1.0.0",
+  "description": "Takes a bunch of bower packages and makes one big bower file with frozen versions.",
+  "main": "index.js",
+  "scripts": {
+    "test": "ava"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/danmindru/bower-consolidator.git"
+  },
+  "keywords": [
+    "bower",
+    "consolidator"
+  ],
+  "author": "Dan Mindru",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/danmindru/bower-consolidator/issues"
+  },
+  "homepage": "https://github.com/danmindru/bower-consolidator#readme",
+  "devDependencies": {
+    "ava": "^0.22.0"
+  }
+}

@@ -1,0 +1,40 @@
+{
+  "name": "collapsible-container",
+  "description": "Polymer 1.X and 2.X collapsible container",
+  "author": "Andrew Loesch <afloesch@gmail.com>",
+  "license": "MIT",
+  "main": [
+    "collapsible-container.html",
+    "accordion-container.html"
+  ],
+  "keywords": [
+    "web-components",
+    "polymer",
+    "collapsible",
+    "accordion"
+  ],
+  "dependencies": {
+    "polymer": "Polymer/polymer#>=1.7.1 <3.0.0",
+    "iron-collapse": "^1.3.0",
+    "iron-icons": "^1.2.1"
+  },
+  "devDependencies": {
+    "iron-component-page": "PolymerElements/iron-component-page#>=1.0.0 <3.0.0",
+    "iron-demo-helpers": "PolymerElements/iron-demo-helpers#>=1.0.0 <3.0.0",
+    "test-fixture": "PolymerElements/test-fixture#>=1.0.0 <3.0.0",
+    "web-component-tester": "^6.0.0",
+    "webcomponentsjs": "webcomponents/webcomponentsjs#>=0.7.0 <2.0.0"
+  },
+  "homepage": "https://github.com/afloesch/collapsible-container",
+  "version": "1.0.4",
+  "_release": "1.0.4",
+  "_resolution": {
+    "type": "version",
+    "tag": "v1.0.4",
+    "commit": "e9958fa260473a392bb0d2d14069ba04f49949c9"
+  },
+  "_source": "https://github.com/afloesch/collapsible-container.git",
+  "_target": "^1.0.4",
+  "_originalSource": "polymer-collapsible-container",
+  "_direct": true
+}

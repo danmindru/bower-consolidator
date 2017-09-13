@@ -4,7 +4,8 @@
   "description": "Takes a bunch of bower packages and makes one big bower file with frozen versions.",
   "main": "index.js",
   "scripts": {
-    "test": "ava"
+    "test": "ava",
+    "dev": "ava --watch"
   },
   "repository": {
     "type": "git",

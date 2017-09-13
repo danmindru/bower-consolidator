@@ -5,31 +5,33 @@ import { reader, parser, outputer } from '../'
 /**
  * Setup.
  */
+const workingDir = 'test-assets'
+
 const onlyCollapsibleAssetPaths = [
-    'collapsible-container/.bower.json',
-    'collapsible-container/bower.json',
+    `${workingDir}/collapsible-container/bower.json`,
+    `${workingDir}/collapsible-container/.bower.json`
 ]
 
 const nonIronAssetPaths = [
-    'collapsible-container/.bower.json',
-    'date-util/.bower.json',
-    'dom-if-else/.bower.json',
-    'collapsible-container/bower.json',
-    'date-util/bower.json',
-    'dom-if-else/bower.json',
+    `${workingDir}/collapsible-container/bower.json`,
+    `${workingDir}/date-util/bower.json`,
+    `${workingDir}/dom-if-else/bower.json`,
+    `${workingDir}/collapsible-container/.bower.json`,
+    `${workingDir}/date-util/.bower.json`,
+    `${workingDir}/dom-if-else/.bower.json`
 ]
 
 const allAssetPaths = [
-    'collapsible-container/.bower.json',
-    'date-util/.bower.json',
-    'dom-if-else/.bower.json',
-    'iron-collapse/.bower.json',
-    'iron-meta/.bower.json',
-    'collapsible-container/bower.json',
-    'date-util/bower.json',
-    'dom-if-else/bower.json',
-    'iron-collapse/bower.json',
-    'iron-meta/bower.json'
+    `${workingDir}/collapsible-container/bower.json`,
+    `${workingDir}/date-util/bower.json`,
+    `${workingDir}/dom-if-else/bower.json`,
+    `${workingDir}/iron-collapse/bower.json`,
+    `${workingDir}/iron-meta/bower.json`,
+    `${workingDir}/collapsible-container/.bower.json`,
+    `${workingDir}/date-util/.bower.json`,
+    `${workingDir}/dom-if-else/.bower.json`,
+    `${workingDir}/iron-collapse/.bower.json`,
+    `${workingDir}/iron-meta/.bower.json`
 ]
 
 const sample = {
@@ -79,66 +81,79 @@ test('reader should fail if no workingDir provided', async (t) => {
 test('reader should succeed if workingDir provided', async (t) => {
     t.plan(1)
 
-    const paths = await reader({ workingDir: 'test-assets' })
+    const paths = await reader({ workingDir: workingDir })
     t.truthy(paths)
 })
 
 test('reader should return an array of paths for workingDir', async (t) => {
     t.plan(1)
 
-    const paths = await reader({ workingDir: 'test-assets' })
+    const paths = await reader({ workingDir: workingDir })
     t.deepEqual(paths, sample.allAssetPaths)
 })
 
 test('reader should fail if exclude glob not an array', async (t) => {
     t.plan(2)
 
-    const paths = await t.throws(reader({ workingDir: 'test-assets', exclude: 'iron-*' }))
+    const paths = await t.throws(reader({ workingDir: workingDir, exclude: 'iron-*' }))
     t.is(paths.message, '💥 Reader Panic! Excludes should be an array of strings, like ["glob/to/exclude"]')
 })
 
 test('reader should return a filtered array for workingDir if exclude glob provided', async (t) => {
     t.plan(1)
 
-    const paths = await reader({ workingDir: 'test-assets', exclude: ['iron-*'] })
+    const paths = await reader({ workingDir: workingDir, exclude: ['iron-*'] })
     t.deepEqual(paths, sample.nonIronAssetPaths)
 })
 
 test('reader should filter by multiple exclude globs', async (t) => {
     t.plan(1)
 
-    const paths = await reader({ workingDir: 'test-assets', exclude: ['iron-*', 'd*'] })
+    const paths = await reader({ workingDir: workingDir, exclude: ['iron-*', 'd*'] })
     t.deepEqual(paths, sample.onlyCollapsibleAssetPaths)
 })
 
-// // TODO: negation glob?
+/**
+ * Parser tests.
+ */
+test('parser should fail if no fileList provided', async (t) => {
+    t.plan(2)
 
-// /**
-//  * Parser tests.
-//  */
-// test('parser should fail if no fileList provided', (t) => {
-//     t.plan(1)
+    const packages = await t.throws(parser())
+    t.is(packages.message, '💥 Parser Panic! Please provide a fileList to parse.')
+})
 
-//     const packages = t.throws(() => parser())
-//     t.is(packages.message, '💥 Parser Panic! Please provide a fileList to parse.')
-// })
+test('parser should fail if fileList is not an array', async (t) => {
+    t.plan(8)
 
-// test('parser should succeed if fileList provided', (t) => {
-//     t.plan(1)
+    const packages = await t.throws(parser({ fileList: true }))
+    const packages1 = await t.throws(parser({ fileList: 'hey' }))
+    const packages2 = await t.throws(parser({ fileList: {} }))
+    const packages3 = await t.throws(parser({ fileList: 9 }))
+    t.is(packages.message, '💥 Parser Panic! Filelist should be an array.')
+    t.is(packages1.message, '💥 Parser Panic! Filelist should be an array.')
+    t.is(packages2.message, '💥 Parser Panic! Filelist should be an array.')
+    t.is(packages3.message, '💥 Parser Panic! Filelist should be an array.')
+})
 
-//     const packages = reader({ fileList: sample.allAssetPaths })
-//     t.truthy(packages)
-// })
+test('parser should succeed if fileList provided', (t) => {
+    t.plan(1)
 
-// test('parser should return an object of packages and their versions', (t) => {
-//     t.plan(1)
+    const packages = parser({ fileList: sample.allAssetPaths })
+    t.truthy(packages)
+})
 
-//     const packages = reader({ fileList: sample.allAssetPaths })
-//     t.deepEqual(packages, sample.allParsedAssets)
-// })
-// // TODO: no bower.json file?
-// // TODO: no .bower.json file?
-// // TODO: no version specified?
+test('parser should return an object of packages and their versions', async (t) => {
+    t.plan(1)
+
+    const packages = await parser({ fileList: sample.allAssetPaths })
+    t.deepEqual(packages, sample.allParsedAssets)
+})
+// TODO: no bower.json file?
+// TODO: no .bower.json file?
+// TODO: no version specified?
+// TODO: bower.json or .bower.json not parsable
+// TODO: order of fileList produces different results...
 
 // /**
 //  * Outputer tests.

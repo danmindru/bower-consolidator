@@ -1379,6 +1379,12 @@ form-data@~2.1.1:
     combined-stream "^1.0.5"
     mime-types "^2.1.12"
 
+fs-readfile-promise@^3.0.0:
+  version "3.0.0"
+  resolved "https://registry.yarnpkg.com/fs-readfile-promise/-/fs-readfile-promise-3.0.0.tgz#8f66593bc196e4b6c16f4a156c4fcd7cc31cafd3"
+  dependencies:
+    graceful-fs "^4.1.2"
+
 fs.realpath@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/fs.realpath/-/fs.realpath-1.0.0.tgz#1504ad2523158caa40db4a2787cb01411994ea4f"

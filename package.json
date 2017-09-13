@@ -46,6 +46,7 @@
     "babel": "inherit"
   },
   "dependencies": {
+    "fs-readfile-promise": "^3.0.0",
     "globby": "^6.1.0"
   }
 }

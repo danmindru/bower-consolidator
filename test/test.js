@@ -1,7 +1,7 @@
 import test from 'ava'
 import del from 'del'
 import readFile from 'fs-readfile-promise'
-import { reader, parser, outputer } from '../'
+import { reader, parser, outputer } from '../lib'
 
 /**
  * Setup.

@@ -4,12 +4,12 @@
   "description": "Takes a bunch of bower packages and makes one big bower file with frozen versions.",
   "main": "index.js",
   "scripts": {
-    "test": "ava",
-    "dev": "ava --watch",
-    "demo": "babel-node -- index.js --cwd test-assets --e \"iron-*\" --e \"date-util\" --o custom.bower.json --tf test-assets/template-example.json --tp path.deep",
-    "transpile": "babel *.js -d dist",
-    "publish:windows": "npm run transpile && pkg . -t node8-win --out-path package",
-    "publish:all": "npm run transpile && pkg . --out-path package"
+    "test": "node ./node_modules/.bin/ava",
+    "dev": "node ./node_modules/.bin/ava --watch",
+    "demo": "node ./node_modules/.bin/babel-node -- index.js --cwd test-assets --e \"iron-*\" --e \"date-util\" --o custom.bower.json --tf test-assets/template-example.json --tp path.deep",
+    "transpile": "node ./node_modules/.bin/babel *.js -d dist",
+    "publish:windows": "npm run transpile && node ./node_modules/.bin/pkg . -t node8-win --out-path package",
+    "publish:all": "npm run transpile && node ./node_modules/.bin/pkg . --out-path package"
   },
   "repository": {
     "type": "git",

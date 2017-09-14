@@ -21,17 +21,17 @@ Options:
   -V, --version                        output the version number
   --cwd, --workingDir <workingDir>     Current working directory (where your many
                                        bower packages are).
-  --e, --excludePaths [excludePaths]   One or many paths (or globs) you want to 
-                                       exclude, i.e. `-e "prefix-*"`. Can be 
+  --e, --excludePaths [excludePaths]   One or many paths (or globs) you want to
+                                       exclude, i.e. `-e "prefix-*"`. Can be
                                        applied multiple times: `-e "one" -e "two"`.
   --o, --outputFile <outputFile>       The output file name (in your cwd).
                                        Defaults to `new.bower.json`
-  --tf, --templateFile <templateFile>  (optional) A JSON file you want to use as 
-                                       template. You *need* to supply a path to 
+  --tf, --templateFile <templateFile>  (optional) A JSON file you want to use as
+                                       template. You *need* to supply a path to
                                        write in that file (see --templatePathtp).
-  --tp, --templatePath <templatePath>  (optional) An object path, like 
-                                       `path.to.something` to insert packages at. 
-                                       Required if template file provided 
+  --tp, --templatePath <templatePath>  (optional) An object path, like
+                                       `path.to.something` to insert packages at.
+                                       Required if template file provided
                                        (see --templateFile).
   -h, --help                           output usage information
 ```
@@ -49,7 +49,7 @@ yarn
 babel-node index.js [options]
 ```
 
-> Requires node v8
+> Requires node v8.5.0+
 
 #### Run a demo
 ```bash
@@ -73,4 +73,3 @@ npm test
 npm run publish:windows
 npm run publish:all # node on win, darwin, linux
 ```
-

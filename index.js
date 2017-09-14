@@ -1,12 +1,11 @@
 import program from 'commander'
-import nodePackage from './package.json'
 import { reader, parser, outputer } from './lib'
 
 let allExcludes = [] 
 const collectExcludes = (value, list) => allExcludes = [...allExcludes, value]
 
 program
-    .version(nodePackage.version)
+    .version('1.0.0')
     .option('--cwd, --workingDir <workingDir>', 'Current working directory (where your many bower packages are).', program)
     .option('--e, --excludePaths [excludePaths]', 'One or many paths (or globs) you want to exclude, i.e. `-e "prefix-*"`. Can be applied multiple times: `-e "one" -e "two"`.', collectExcludes)
     .option('--o, --outputFile <outputFile>', 'The output file name (in your cwd). Defaults to `new.bower.json`')

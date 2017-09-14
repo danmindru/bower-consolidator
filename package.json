@@ -6,8 +6,10 @@
   "scripts": {
     "test": "ava",
     "dev": "ava --watch",
-    "demo": "./node_modules/.bin/babel-node -- index.js --cwd test-assets --e \"iron-*\" --e \"date-util\" --o custom.bower.json --tf test-assets/template-example.json --tp path.deep",
-    "publish": "pkg index.js"
+    "demo": "babel-node -- index.js --cwd test-assets --e \"iron-*\" --e \"date-util\" --o custom.bower.json --tf test-assets/template-example.json --tp path.deep",
+    "transpile": "babel *.js -d dist",
+    "publish:windows": "npm run transpile && pkg . -t node8-win --out-path package",
+    "publish:all": "npm run transpile && pkg . --out-path package"
   },
   "repository": {
     "type": "git",
@@ -25,13 +27,6 @@
   "homepage": "https://github.com/danmindru/bower-consolidator#readme",
   "devDependencies": {
     "ava": "^0.22.0",
-    "babel-cli": "^6.26.0",
-    "babel-plugin-transform-export-extensions": "^6.22.0",
-    "babel-plugin-transform-object-rest-spread": "^6.26.0",
-    "babel-polyfill": "^6.26.0",
-    "babel-preset-es2015": "^6.24.1",
-    "babel-preset-es2016": "^6.24.1",
-    "babel-preset-es2017": "^6.24.1",
     "del": "^3.0.0",
     "pkg": "^4.2.4"
   },
@@ -50,6 +45,15 @@
     "babel": "inherit"
   },
   "dependencies": {
+    "babel": "^6.23.0",
+    "babel-cli": "^6.26.0",
+    "babel-plugin-transform-export-extensions": "^6.22.0",
+    "babel-plugin-transform-object-rest-spread": "^6.26.0",
+    "babel-plugin-transform-runtime": "^6.23.0",
+    "babel-polyfill": "^6.26.0",
+    "babel-preset-es2015": "^6.24.1",
+    "babel-preset-es2016": "^6.24.1",
+    "babel-preset-es2017": "^6.24.1",
     "commander": "^2.11.0",
     "fs-readfile-promise": "^3.0.0",
     "fs-writefile-promise": "^2.0.0",
@@ -58,5 +62,9 @@
     "json-format": "^1.0.1",
     "lodash": "^4.17.4",
     "sort-object-keys": "^1.1.2"
+  },
+  "bin": "./dist/index.js",
+  "pkg": {
+    "scripts": "./dist/**/*"
   }
 }

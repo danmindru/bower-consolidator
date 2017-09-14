@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "test": "ava",
-    "dev": "ava --watch"
+    "dev": "ava --watch",
+    "demo": "./node_modules/.bin/babel-node -- cli.js --cwd test-assets --e \"iron-*\" --e \"date-util\" --o custom.bower.json --tf test-assets/template-example.json --tp path.deep"
   },
   "repository": {
     "type": "git",
@@ -23,6 +24,7 @@
   "homepage": "https://github.com/danmindru/bower-consolidator#readme",
   "devDependencies": {
     "ava": "^0.22.0",
+    "babel-cli": "^6.26.0",
     "babel-plugin-transform-export-extensions": "^6.22.0",
     "babel-plugin-transform-object-rest-spread": "^6.26.0",
     "babel-polyfill": "^6.26.0",
@@ -46,6 +48,7 @@
     "babel": "inherit"
   },
   "dependencies": {
+    "commander": "^2.11.0",
     "fs-readfile-promise": "^3.0.0",
     "fs-writefile-promise": "^2.0.0",
     "globby": "^6.1.0",

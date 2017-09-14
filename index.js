@@ -1,5 +1,10 @@
+import _ from 'lodash'
 import globby from 'globby'
 import readFile from 'fs-readfile-promise'
+import writeFile from 'fs-writefile-promise'
+import isJSON from 'is-valid-json'
+import jsonFormat from 'json-format'
+import sortObjectKeys from 'sort-object-keys'
 
 const error = (componentName, errorMessage) => new Error(`💥 ${componentName} Panic! ${errorMessage}`)
 
@@ -71,12 +76,10 @@ export async function parser({ fileList } = {}) {
 
       acc = {
         ...acc,
-        [name]: {
-          version: determineVersion(
-            acc[name] ? acc[name].version : null,
-            version ? version : _release
-          )
-        }
+        [name]: determineVersion(
+          acc[name],
+          version ? version : _release
+        )
       }
 
       return acc
@@ -86,6 +89,81 @@ export async function parser({ fileList } = {}) {
   }
 }
 
-export function outputer({ outputFile } = {}) {
+/**
+ * Outputs content to a file. 
+ * 
+ * @param {object} options 
+ * @param {*} options.content The content to output.
+ * @param {string} options.outputFile File path to output to. 
+ * @param {string} options.templateFile JSON template file to use.
+ * @param {string} options.templatePath Path in the template to write.
+ */
+export async function outputer({ content, outputFile, templateFile, templatePath } = {}) {
   const name = 'Outputer'
+  const formatConfig = {
+    type: 'space',
+    size: 2
+  }
+  const _outputMessage = (result, path, message) => {
+    const icon = result === 'success' ? '✅' : '⚠' 
+
+    return {
+      result,
+      message: `${icon} ${message} to ${path}`
+    }
+  }
+  const _insertObjectAtPath = (object, path, newContent) => {
+    const objectCopy = { ...object }
+    const currentContent = _.get(objectCopy, path)
+    _.set(
+      objectCopy, 
+      path, 
+      sortObjectKeys({ ...currentContent, ...newContent })
+    )
+
+    return objectCopy
+  }
+
+  if (!outputFile) {
+    outputFile = 'new.bower.json'
+  }
+
+  if (!content) {
+    return _outputMessage('warning', outputFile, 'Did nothing, because there was nothing to output')
+  }
+
+  if (!isJSON(content)){
+    console.error(`Content that failed: ${JSON.stringify(content)}`)
+    return Promise.reject(error(name, `Invalid content provided to ${outputFile}`))
+  }
+
+  if (!templateFile) {
+    try {
+      await writeFile(outputFile, jsonFormat(content, formatConfig)) 
+    } catch (e) {
+      console.error(e)
+      return Promise.reject(error(name, `Failed to write to ${outputFile}`))
+    }
+  } else {
+    if (!templatePath) {
+      return Promise.reject(error(name, 'Provide a templatePath to know where to output in your templateFile.'))
+    }
+
+    const templateFileContents = await readFile(templateFile, { encoding: 'utf8' })
+    
+    if (!isJSON(templateFileContents)) {
+      return Promise.reject(error(name, 'Could not parse the provided templateFile.'))
+    }
+
+    const fileContentsWithInsertion = _insertObjectAtPath(JSON.parse(templateFileContents), templatePath, content)
+
+    try {
+      await writeFile(outputFile, jsonFormat(fileContentsWithInsertion, formatConfig))
+    } catch (e) {
+      console.error(e)
+      return Promise.reject(error(name, `Failed to write to ${outputFile}`))
+    }
+  }
+
+  return _outputMessage('success', outputFile, 'Outputed content')
 }

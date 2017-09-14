@@ -47,6 +47,11 @@
   },
   "dependencies": {
     "fs-readfile-promise": "^3.0.0",
-    "globby": "^6.1.0"
+    "fs-writefile-promise": "^2.0.0",
+    "globby": "^6.1.0",
+    "is-valid-json": "^1.0.2",
+    "json-format": "^1.0.1",
+    "lodash": "^4.17.4",
+    "sort-object-keys": "^1.1.2"
   }
 }

@@ -1,5 +1,6 @@
 import test from 'ava'
 import del from 'del'
+import readFile from 'fs-readfile-promise'
 import { reader, parser, outputer } from '../'
 
 /**
@@ -42,20 +43,26 @@ const sample = {
 
     // Parser samples
     allParsedAssets: {
-        'collapsible-container': {
-            version: '1.0.4'
-        },
-        'date-util': {
-            version: '0.5.0'
-        },
-        'dom-if-else': {
-            version: '0.9.0'
-        },
-        'iron-collapse': {
-            version: '1.3.0'
-        },
-        'iron-meta': {
-            version: '1.1.3'
+        "collapsible-container": "1.0.4",
+        "date-util": "0.5.0",
+        "dom-if-else": "0.9.0",
+        "iron-collapse": "1.3.0",
+        "iron-meta": "1.1.3"
+    }
+}
+
+const sampleTemplateInsertion = {
+    "name": "template-example",
+    "path": {
+        "deep": {
+            "a": 1,
+            "collapsible-container": "1.0.4",
+            "date-util": "0.5.0",
+            "dom-if-else": "0.9.0",
+            "f": 2,
+            "iron-collapse": "1.3.0",
+            "iron-meta": "1.1.3",
+            "z": 3
         }
     }
 }
@@ -155,26 +162,67 @@ test('parser should return an object of packages and their versions', async (t) 
 // TODO: bower.json or .bower.json not parsable
 // TODO: order of fileList produces different results...
 
-// /**
-//  * Outputer tests.
-//  */
-// test('outputer should fail if no packages provided', (t) => {
-//     t.plan(1)
+/**
+ * Outputer tests.
+ */
+test('outputer should not fail if no params provided, using default path', async (t) => {
+    t.plan(1)
 
-//     const output = t.throws(() => outputer())
-//     t.is(output.message, '💥 Outputer Panic! Please provide a list of packages to parse.')
-// })
+    const output = await outputer()
+    t.deepEqual(output, {
+        result: 'warning', message: '⚠ Did nothing, because there was nothing to output to new.bower.json' })
+})
 
-// test('outputer should default to new.bower.json', async (t) => {
-//     t.plan(1)
+test('outputer should write to a desired path', async (t) => {
+    t.plan(1)
 
-//     const output = outputer({ packages: sample.allParsedAssets })
-//     t.is(await output, 'new.bower.json')
-// })
+    const output = await outputer({ outputFile: 'custom.bower.json' })
+    t.deepEqual(output, { result: 'warning', message: '⚠ Did nothing, because there was nothing to output to custom.bower.json' })
+})
 
-// test('outputer should write to a desired path in workingDir', async (t) => {
-//     t.plan(1)
+test('outputer should write a new file given content and output path', async (t) => {
+    t.plan(2)
 
-//     const output = outputer({ packages: sample.allParsedAssets, outputFile: 'custom.bower.json' })
-//     t.is(await output, 'custom.bower.json')
-// })
+    const output = await outputer({ content: sample.allParsedAssets, outputFile: 'custom.bower.json' })
+    const outputedFile = await readFile('custom.bower.json', { encoding: 'utf8'})
+   
+    t.deepEqual(JSON.parse(outputedFile), sample.allParsedAssets)
+    t.deepEqual(output, { result: 'success', message: '✅ Outputed content to custom.bower.json' })
+})
+
+test('outputer should fail with bad content type', async (t) => {
+    t.plan(2)
+
+    const output = await t.throws(outputer({ content: 'not: good', outputFile: 'custom.bower.json' }))
+
+    t.deepEqual(output.message, '💥 Outputer Panic! Invalid content provided to custom.bower.json')
+})
+
+test('outputer should fail with template file and no template path', async (t) => {
+    t.plan(2)
+
+    const output = await t.throws(outputer({ content: sample.allParsedAssets, templateFile: 'test-assets/template-example.json' }))
+
+    t.deepEqual(output.message, '💥 Outputer Panic! Provide a templatePath to know where to output in your templateFile.')
+})
+
+test('outputer should fail with bad template file', async (t) => {
+    t.plan(2)
+
+    const output = await t.throws(outputer({ content: sample.allParsedAssets, templateFile: 'test-assets/invalid-template-example.json', templatePath: '.' }))
+
+    t.deepEqual(output.message, '💥 Outputer Panic! Could not parse the provided templateFile.')
+})
+
+
+test('outputer should insert content in template file at path', async (t) => {
+    t.plan(2)
+
+    const output = await outputer({ content: sample.allParsedAssets, templateFile: 'test-assets/template-example.json', templatePath: 'path.deep' })
+    const outputedFile = await readFile('new.bower.json', { encoding: 'utf8' })
+
+    t.deepEqual(JSON.parse(outputedFile), sampleTemplateInsertion)
+    t.deepEqual(output.message, '✅ Outputed content to new.bower.json')
+})
+
+// TODO: should write to root if templatePath is '.'

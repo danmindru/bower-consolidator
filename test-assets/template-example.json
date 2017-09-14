@@ -1,0 +1,10 @@
+{
+  "name": "template-example",
+  "path": {
+    "deep": {
+      "a": 1,
+      "f": 2,
+      "z": 3
+    }
+  }
+}

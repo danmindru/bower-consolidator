@@ -15,6 +15,6 @@ yarn # install all dependencies
 ### Testing
 ```bash
 npm test
-npm test --watch
+npm dev # continuous tests, watches files
 ```
 

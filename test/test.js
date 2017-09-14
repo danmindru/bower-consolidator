@@ -82,7 +82,7 @@ test('reader should fail if no workingDir provided', async (t) => {
     t.plan(2)
 
     const paths = await t.throws(reader())
-    t.is(paths.message, '💥 Reader Panic! Please provide a workingDirectory.')
+    t.is(paths.message, '💥  Reader Panic! Please provide a workingDirectory.')
 })
 
 test('reader should succeed if workingDir provided', async (t) => {
@@ -102,21 +102,31 @@ test('reader should return an array of paths for workingDir', async (t) => {
 test('reader should fail if exclude glob not an array', async (t) => {
     t.plan(2)
 
-    const paths = await t.throws(reader({ workingDir: workingDir, exclude: 'iron-*' }))
-    t.is(paths.message, '💥 Reader Panic! Excludes should be an array of strings, like ["glob/to/exclude"]')
+    const paths = await t.throws(reader({ workingDir: workingDir, excludePaths: 'iron-*' }))
+    t.is(paths.message, '💥  Reader Panic! Excludes should be an array of strings, like ["glob/to/exclude"]')
 })
 
 test('reader should return a filtered array for workingDir if exclude glob provided', async (t) => {
     t.plan(1)
 
-    const paths = await reader({ workingDir: workingDir, exclude: ['iron-*'] })
+    const paths = await reader({ workingDir: workingDir, excludePaths: ['iron-*'] })
     t.deepEqual(paths, sample.nonIronAssetPaths)
+})
+
+test('reader should parse exclude glob array strings', async (t) => {
+    t.plan(2)
+
+    const paths = await reader({ workingDir: workingDir, excludePaths: "['iron-*']" })
+    const paths1 = await reader({ workingDir: workingDir, excludePaths: '["iron-*"]' }) // Different quotes
+
+    t.deepEqual(paths, sample.nonIronAssetPaths)
+    t.deepEqual(paths1, sample.nonIronAssetPaths)
 })
 
 test('reader should filter by multiple exclude globs', async (t) => {
     t.plan(1)
 
-    const paths = await reader({ workingDir: workingDir, exclude: ['iron-*', 'd*'] })
+    const paths = await reader({ workingDir: workingDir, excludePaths: ['iron-*', 'd*'] })
     t.deepEqual(paths, sample.onlyCollapsibleAssetPaths)
 })
 
@@ -127,7 +137,7 @@ test('parser should fail if no fileList provided', async (t) => {
     t.plan(2)
 
     const packages = await t.throws(parser())
-    t.is(packages.message, '💥 Parser Panic! Please provide a fileList to parse.')
+    t.is(packages.message, '💥  Parser Panic! Please provide a fileList to parse.')
 })
 
 test('parser should fail if fileList is not an array', async (t) => {
@@ -137,10 +147,10 @@ test('parser should fail if fileList is not an array', async (t) => {
     const packages1 = await t.throws(parser({ fileList: 'hey' }))
     const packages2 = await t.throws(parser({ fileList: {} }))
     const packages3 = await t.throws(parser({ fileList: 9 }))
-    t.is(packages.message, '💥 Parser Panic! Filelist should be an array.')
-    t.is(packages1.message, '💥 Parser Panic! Filelist should be an array.')
-    t.is(packages2.message, '💥 Parser Panic! Filelist should be an array.')
-    t.is(packages3.message, '💥 Parser Panic! Filelist should be an array.')
+    t.is(packages.message, '💥  Parser Panic! Filelist should be an array.')
+    t.is(packages1.message, '💥  Parser Panic! Filelist should be an array.')
+    t.is(packages2.message, '💥  Parser Panic! Filelist should be an array.')
+    t.is(packages3.message, '💥  Parser Panic! Filelist should be an array.')
 })
 
 test('parser should succeed if fileList provided', (t) => {
@@ -170,14 +180,14 @@ test('outputer should not fail if no params provided, using default path', async
 
     const output = await outputer()
     t.deepEqual(output, {
-        result: 'warning', message: '⚠ Did nothing, because there was nothing to output to new.bower.json' })
+        result: 'warning', message: '⚠  Did nothing, because there was nothing to output to new.bower.json' })
 })
 
 test('outputer should write to a desired path', async (t) => {
     t.plan(1)
 
     const output = await outputer({ outputFile: 'custom.bower.json' })
-    t.deepEqual(output, { result: 'warning', message: '⚠ Did nothing, because there was nothing to output to custom.bower.json' })
+    t.deepEqual(output, { result: 'warning', message: '⚠  Did nothing, because there was nothing to output to custom.bower.json' })
 })
 
 test('outputer should write a new file given content and output path', async (t) => {
@@ -187,7 +197,7 @@ test('outputer should write a new file given content and output path', async (t)
     const outputedFile = await readFile('custom.bower.json', { encoding: 'utf8'})
    
     t.deepEqual(JSON.parse(outputedFile), sample.allParsedAssets)
-    t.deepEqual(output, { result: 'success', message: '✅ Outputed content to custom.bower.json' })
+    t.deepEqual(output, { result: 'success', message: '✅  Outputed content to custom.bower.json' })
 })
 
 test('outputer should fail with bad content type', async (t) => {
@@ -195,7 +205,7 @@ test('outputer should fail with bad content type', async (t) => {
 
     const output = await t.throws(outputer({ content: 'not: good', outputFile: 'custom.bower.json' }))
 
-    t.deepEqual(output.message, '💥 Outputer Panic! Invalid content provided to custom.bower.json')
+    t.deepEqual(output.message, '💥  Outputer Panic! Invalid content provided to custom.bower.json')
 })
 
 test('outputer should fail with template file and no template path', async (t) => {
@@ -203,7 +213,7 @@ test('outputer should fail with template file and no template path', async (t) =
 
     const output = await t.throws(outputer({ content: sample.allParsedAssets, templateFile: 'test-assets/template-example.json' }))
 
-    t.deepEqual(output.message, '💥 Outputer Panic! Provide a templatePath to know where to output in your templateFile.')
+    t.deepEqual(output.message, '💥  Outputer Panic! Provide a templatePath to know where to output in your templateFile.')
 })
 
 test('outputer should fail with bad template file', async (t) => {
@@ -211,7 +221,7 @@ test('outputer should fail with bad template file', async (t) => {
 
     const output = await t.throws(outputer({ content: sample.allParsedAssets, templateFile: 'test-assets/invalid-template-example.json', templatePath: '.' }))
 
-    t.deepEqual(output.message, '💥 Outputer Panic! Could not parse the provided templateFile.')
+    t.deepEqual(output.message, '💥  Outputer Panic! Could not parse the provided templateFile.')
 })
 
 
@@ -222,7 +232,7 @@ test('outputer should insert content in template file at path', async (t) => {
     const outputedFile = await readFile('new.bower.json', { encoding: 'utf8' })
 
     t.deepEqual(JSON.parse(outputedFile), sampleTemplateInsertion)
-    t.deepEqual(output.message, '✅ Outputed content to new.bower.json')
+    t.deepEqual(output.message, '✅  Outputed content to new.bower.json')
 })
 
 // TODO: should write to root if templatePath is '.'

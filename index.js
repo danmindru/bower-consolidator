@@ -6,7 +6,7 @@ import isJSON from 'is-valid-json'
 import jsonFormat from 'json-format'
 import sortObjectKeys from 'sort-object-keys'
 
-const error = (componentName, errorMessage) => new Error(`💥 ${componentName} Panic! ${errorMessage}`)
+const error = (componentName, errorMessage) => new Error(`💥  ${componentName} Panic! ${errorMessage}`)
 
 /**
  * Reads bower files provided a working directory.
@@ -15,7 +15,7 @@ const error = (componentName, errorMessage) => new Error(`💥 ${componentName} 
  * @param {string} options.workingDir
  * @param {array} options.exclude
  */
-export function reader({ workingDir, exclude } = {}) {
+export function reader({ workingDir, excludePaths } = {}) {
   const name = 'Reader'
   const _formatExcludes = (globList) => {
     return globList.map((glob) => `${workingDir}/${glob}/**`)
@@ -25,8 +25,17 @@ export function reader({ workingDir, exclude } = {}) {
     return Promise.reject(error(name, 'Please provide a workingDirectory.'))
   } 
 
-  if (exclude && !Array.isArray(exclude)) {
-    return Promise.reject(error(name, 'Excludes should be an array of strings, like ["glob/to/exclude"]'))
+  if (excludePaths && !Array.isArray(excludePaths)) {
+    // TODO: make this fool-proof
+    let parseExcludeAsString
+
+    try {
+      parseExcludeAsString = JSON.parse(excludePaths.replace(/'/g, '"'))
+    } catch (e) {
+      return Promise.reject(error(name, 'Excludes should be an array of strings, like ["glob/to/exclude"]'))
+    }
+
+    excludePaths = parseExcludeAsString
   }
     
   return globby(
@@ -35,7 +44,7 @@ export function reader({ workingDir, exclude } = {}) {
       `${workingDir}/**/.bower.json`
     ],
     {
-      ignore: [...exclude ? _formatExcludes(exclude) : [] ]
+      ignore: [...excludePaths ? _formatExcludes(excludePaths) : [] ]
     }
   )
 }
@@ -105,7 +114,7 @@ export async function outputer({ content, outputFile, templateFile, templatePath
     size: 2
   }
   const _outputMessage = (result, path, message) => {
-    const icon = result === 'success' ? '✅' : '⚠' 
+    const icon = result === 'success' ? '✅ ' : '⚠ ' 
 
     return {
       result,

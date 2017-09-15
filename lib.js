@@ -10,10 +10,10 @@ const error = (componentName, errorMessage) => new Error(`💥  ${componentName}
 
 /**
  * Reads bower files provided a working directory.
- * 
+ *
  * @param {object} options
  * @param {string} options.workingDir
- * @param {array} options.exclude
+ * @param {array} options.excludePaths
  */
 export function reader({ workingDir, excludePaths } = {}) {
   const name = 'Reader'
@@ -23,7 +23,7 @@ export function reader({ workingDir, excludePaths } = {}) {
 
   if (!workingDir) {
     return Promise.reject(error(name, 'Please provide a workingDirectory.'))
-  } 
+  }
 
   if (excludePaths && !Array.isArray(excludePaths)) {
     // TODO: make this fool-proof
@@ -37,7 +37,7 @@ export function reader({ workingDir, excludePaths } = {}) {
 
     excludePaths = parseExcludeAsString
   }
-    
+
   return globby(
     [
       `${workingDir}/**/bower.json`,
@@ -69,10 +69,10 @@ export async function parser({ fileList } = {}) {
   }
 
   const files = await _readFiles(fileList)
-  
+
   try {
     const determineVersion = (currentVersion, nextVersion) => {
-      // TODO: the version is determined on a first come - first saved basis, which means that the order of the provided `fileList` could produce different results. Not great. 
+      // TODO: the version is determined on a first come - first saved basis, which means that the order of the provided `fileList` could produce different results. Not great.
       if (!currentVersion) {
         return nextVersion
       } else {
@@ -99,11 +99,11 @@ export async function parser({ fileList } = {}) {
 }
 
 /**
- * Outputs content to a file. 
- * 
- * @param {object} options 
+ * Outputs content to a file.
+ *
+ * @param {object} options
  * @param {*} options.content The content to output.
- * @param {string} options.outputFile File path to output to. 
+ * @param {string} options.outputFile File path to output to.
  * @param {string} options.templateFile JSON template file to use.
  * @param {string} options.templatePath Path in the template to write.
  */
@@ -114,7 +114,7 @@ export async function outputer({ content, outputFile, templateFile, templatePath
     size: 2
   }
   const _outputMessage = (result, path, message) => {
-    const icon = result === 'success' ? '✅ ' : '⚠ ' 
+    const icon = result === 'success' ? '✅ ' : '⚠ '
 
     return {
       result,
@@ -125,8 +125,8 @@ export async function outputer({ content, outputFile, templateFile, templatePath
     const objectCopy = { ...object }
     const currentContent = _.get(objectCopy, path)
     _.set(
-      objectCopy, 
-      path, 
+      objectCopy,
+      path,
       sortObjectKeys({ ...currentContent, ...newContent })
     )
 
@@ -148,7 +148,7 @@ export async function outputer({ content, outputFile, templateFile, templatePath
 
   if (!templateFile) {
     try {
-      await writeFile(outputFile, jsonFormat(content, formatConfig)) 
+      await writeFile(outputFile, jsonFormat(content, formatConfig))
     } catch (e) {
       console.error(e)
       return Promise.reject(error(name, `Failed to write to ${outputFile}`))
@@ -159,7 +159,7 @@ export async function outputer({ content, outputFile, templateFile, templatePath
     }
 
     const templateFileContents = await readFile(templateFile, { encoding: 'utf8' })
-    
+
     if (!isJSON(templateFileContents)) {
       return Promise.reject(error(name, 'Could not parse the provided templateFile.'))
     }

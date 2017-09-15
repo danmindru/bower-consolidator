@@ -1,6 +1,11 @@
 # Bower consolidator
 Takes a bunch of bower packages and finds their version from `bower.json` or `.bower.json`, then makes one big bower file with frozen versions.
 
+##### What is this for?
+✅ older projects that need dependencies consolidated <br/>
+✅ older projects that you want to freeze deps for (point this at `bower_components`)  <br/>
+✅ projects that have a bunch of bower files which you want to merge into one  <br/>
+✅ projects that have source and 3rd party deps in the same dir (use excludePaths, but ask yourself why did you get in this situation first) 
 
 ## Usage (packaged)
 ### Windows

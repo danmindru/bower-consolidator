@@ -52,7 +52,8 @@ export function reader({ workingDir, excludePaths } = {}) {
 /**
  * Parses versions and names of packages provded as a file list.
  *
- * @param {array} fileList
+ * @param {object} options
+ * @param {array} options.fileList
  */
 export async function parser({ fileList } = {}) {
   const name = 'Parser'

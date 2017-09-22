@@ -5,7 +5,7 @@ Takes a bunch of bower packages and finds their version from `bower.json` or `.b
 ✅ older projects that need dependencies consolidated <br/>
 ✅ older projects that you want to freeze deps for (point this at `bower_components`)  <br/>
 ✅ projects that have a bunch of bower files which you want to merge into one  <br/>
-✅ projects that have source and 3rd party deps in the same dir (use excludePaths, but ask yourself why did you get in this situation first) 
+✅ projects that have source and 3rd party deps in the same dir (use excludePaths, but ask yourself why did you get in this situation first)
 
 ## Usage (packaged)
 ### Windows
@@ -23,22 +23,22 @@ Usage: index [options]
 
 Options:
 
-  -V, --version                        output the version number
-  --cwd, --workingDir <workingDir>     Current working directory (where your many
-                                       bower packages are).
-  --e, --excludePaths [excludePaths]   One or many paths (or globs) you want to
-                                       exclude, i.e. `-e "prefix-*"`. Can be
-                                       applied multiple times: `-e "one" -e "two"`.
-  --o, --outputFile <outputFile>       The output file name (in your cwd).
-                                       Defaults to `new.bower.json`
-  --tf, --templateFile <templateFile>  (optional) A JSON file you want to use as
-                                       template. You *need* to supply a path to
-                                       write in that file (see --templatePathtp).
-  --tp, --templatePath <templatePath>  (optional) An object path, like
-                                       `path.to.something` to insert packages at.
-                                       Required if template file provided
-                                       (see --templateFile).
-  -h, --help                           output usage information
+  -V, --version          output the version number
+  --cwd, --workingDir    Current working directory (where your many
+                         bower packages are).
+  --e, --excludePaths    One or many paths (or globs) you want to
+                         exclude, i.e. `-e "prefix-*"`. Can be
+                         applied multiple times: `-e "one" -e "two"`.
+  --o, --outputFile      The output file name (in your cwd).
+                         Defaults to `new.bower.json`
+  --tf, --templateFile   (optional) A JSON file you want to use as
+                         template. You *need* to supply a path to
+                         write in that file (see --templatePathtp).
+  --tp, --templatePath   (optional) An object path, like
+                         `path.to.something` to insert packages at.
+                         Required if template file provided
+                         (see --templateFile).
+  -h, --help             output usage information
 ```
 -----------------------------------------
 
@@ -65,12 +65,12 @@ npm run demo # outputs consolidated packages to ./custom.bower.json
 Start by installing all dependencies.
 ```bash
 yarn
-npm dev # continuous tests, watches files
+npm run dev # continuous tests, watches files
 ```
 
 ### Run tests once
 ```bash
-npm test
+npm run test
 ```
 
 ### Publish new build
